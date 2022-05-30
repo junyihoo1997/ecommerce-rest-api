@@ -1,6 +1,7 @@
 import { DynamoDB } from 'aws-sdk';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
-import { generateRandomId, getEventBody, addCorsHeader } from '../../utils/Utils'
+import { generateRandomId, getEventBody, addCorsHeader } from '../../helpers/Utils'
+import {validateAsProductEntry} from "./validator";
 
 const dbClient = new DynamoDB.DocumentClient();
 
@@ -13,14 +14,20 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     try{
         const item = getEventBody(event);
         item.id = generateRandomId();
+
+        // validate product body
+        validateAsProductEntry(item);
+
         await dbClient.put({
-            TableName: 'product',
+            TableName: 'ProductTable',
             Item: item
         }).promise();
+
         result.body = JSON.stringify({
             id: item.id
         })
-    } catch (error: any) {
+    }
+    catch (error: any) {
         result.body = error.message
     }
 
