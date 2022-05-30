@@ -1,4 +1,4 @@
-import { APIGatewayProxyEvent, APIGatewayProxyResult } from "aws-lambda";
+import { APIGatewayProxyEvent, APIGatewayProxyResult } from 'aws-lambda';
 
 export function generateRandomId(): string {
     return Math.random().toString(36).slice(2);

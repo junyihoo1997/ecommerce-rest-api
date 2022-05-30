@@ -28,7 +28,7 @@ export class GenericTable{
                 name: this.props.primaryKey,
                 type: AttributeType.STRING
             },
-            tableName: this.props.tableName
+            tableName: this.props.tableName,
         })
     }
 

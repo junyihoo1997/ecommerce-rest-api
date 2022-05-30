@@ -1,13 +1,14 @@
 import { NodejsFunction } from 'aws-cdk-lib/aws-lambda-nodejs'
-import * as path from "path";
-import {Stack} from "aws-cdk-lib";
+import * as path from 'path';
+import {aws_iam, Stack} from 'aws-cdk-lib';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
 
 export interface LambdaProps {
     id: string,
     path: string,
     table?: Table,
-    tablePermission?: string
+    tablePermission?: string,
+    multipleTableQueries?: boolean
 }
 
 export class GenericLambda{
@@ -24,12 +25,23 @@ export class GenericLambda{
     private initialize(){
         this.createLambda();
         this.grantTableRights();
+        this.grantMultipleTableRights();
     }
 
     private createLambda(){
         this.lambda = new NodejsFunction(this.stack, this.props.id, {
             entry: path.join(__dirname, this.props.path),
         })
+    }
+
+    private grantMultipleTableRights(){
+        if(this.props.multipleTableQueries){
+            this.lambda.role?.addManagedPolicy(
+                aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
+                    'AmazonDynamoDBFullAccess'
+                )
+            )
+        }
     }
 
     private grantTableRights(){
