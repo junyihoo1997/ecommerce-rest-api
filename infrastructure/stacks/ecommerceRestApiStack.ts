@@ -1,8 +1,8 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
-import { LambdaIntegration, RestApi } from 'aws-cdk-lib/aws-apigateway'
+import { RestApi } from 'aws-cdk-lib/aws-apigateway'
 import { GenericTable } from '../templates/genericTable';
-import {GenericLambda} from "../templates/genericLambda";
+import { productApiGatewayIntegration } from "../apis/product";
 
 export class EcommerceRestApiStack extends Stack{
 
@@ -20,15 +20,7 @@ export class EcommerceRestApiStack extends Stack{
     constructor(scope: Construct, id: string, props: StackProps){
         super(scope, id, props)
 
-        const productCreateLambda = new GenericLambda(this, {
-            id: 'productCreateLambda',
-            path: '/../../src/services/product/create.ts',
-            table: this.productTable.getTable(),
-            tablePermission: 'write'
-        })
-
-        const productCreateLambdaIntegration = new LambdaIntegration(productCreateLambda.getLambda());
-        const productCreateLambdaResource = this.api.root.addResource('productCreate');
-        productCreateLambdaResource.addMethod('POST', productCreateLambdaIntegration);
+        // Create Product lambdas and api routes with apiGw
+        productApiGatewayIntegration(this, this.api, this.productTable);
     }
 }

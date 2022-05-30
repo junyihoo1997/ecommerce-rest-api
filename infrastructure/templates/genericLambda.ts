@@ -12,7 +12,7 @@ export interface LambdaProps {
 
 export class GenericLambda{
     private lambda: NodejsFunction;
-    private stack: Stack;
+    readonly stack: Stack;
     private props: LambdaProps
 
     public constructor(stack: Stack, props: LambdaProps){
@@ -41,7 +41,7 @@ export class GenericLambda{
         }
     }
 
-    public getLambda(){
+    public getLambda(): NodejsFunction{
         return this.lambda;
     }
 }
