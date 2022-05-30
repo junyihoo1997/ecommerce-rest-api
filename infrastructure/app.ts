@@ -1,4 +1,4 @@
-import { EcommerceRestApiStack } from './EcommerceRestApiStack';
+import { EcommerceRestApiStack } from './ecommerceRestApiStack';
 import { App } from 'aws-cdk-lib'
 
 const app = new App();

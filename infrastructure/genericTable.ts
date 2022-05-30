@@ -28,4 +28,8 @@ export class GenericTable{
             tableName: this.name
         })
     }
+
+    public getTable(){
+        return this.table;
+    }
 }
