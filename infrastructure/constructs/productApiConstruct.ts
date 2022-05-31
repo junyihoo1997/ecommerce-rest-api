@@ -4,7 +4,7 @@ import { GenericLambda } from './genericLambda';
 import { Stack } from 'aws-cdk-lib';
 
 export interface ProductApiConstructProps{
-    table?: Table,
+    table: Table,
     apiGateway: RestApi,
 }
 
@@ -28,6 +28,12 @@ export class ProductApiConstruct{
             path: '/../../src/services/product/create.ts',
             table: this.props.table,
             tablePermission: 'write',
+            environments: [
+                {
+                    key: 'TABLE_NAME',
+                    value: this.props.table.tableName
+                }
+            ]
         })
 
         // Create product api
@@ -42,6 +48,12 @@ export class ProductApiConstruct{
             path: '/../../src/services/product/read.ts',
             table: this.props.table,
             tablePermission: 'read',
+            environments: [
+                {
+                    key: 'TABLE_NAME',
+                    value: this.props.table.tableName
+                }
+            ]
         })
 
         // Create product read api
@@ -53,6 +65,12 @@ export class ProductApiConstruct{
             path: '/../../src/services/product/update.ts',
             table: this.props.table,
             tablePermission: 'write',
+            environments: [
+                {
+                    key: 'TABLE_NAME',
+                    value: this.props.table.tableName
+                }
+            ]
         })
 
         // Create product Update api
@@ -64,6 +82,12 @@ export class ProductApiConstruct{
             path: '/../../src/services/product/delete.ts',
             table: this.props.table,
             tablePermission: 'write',
+            environments: [
+                {
+                    key: 'TABLE_NAME',
+                    value: this.props.table.tableName
+                }
+            ]
         })
 
         // Create product delete api

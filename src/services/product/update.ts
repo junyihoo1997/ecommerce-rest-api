@@ -1,7 +1,7 @@
 import { DynamoDB } from 'aws-sdk';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { getEventBody, addCorsHeader } from '../../helpers/Utils'
-import { MissingFieldError, validateProductUpdateEntry } from '../../validators/product';
+import { MissingFieldError, validateProductEntry } from '../../validators/product';
 
 const TABLE_NAME = process.env.TABLE_NAME as string;
 const dbClient = new DynamoDB.DocumentClient();
@@ -17,7 +17,7 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
         const productId = event.queryStringParameters?.['id']
 
         // validate product body
-        validateProductUpdateEntry(requestBody);
+        validateProductEntry(requestBody);
 
         if (requestBody && productId) {
             const requestBodyKey = Object.keys(requestBody)[0];
@@ -39,6 +39,9 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
             }).promise();
 
             result.body = JSON.stringify(updateResult)
+        } else {
+            result.statusCode = 422;
+            result.body = 'Product not found.'
         }
     }
     catch (error: any) {

@@ -3,11 +3,17 @@ import * as path from 'path';
 import {aws_iam, Stack} from 'aws-cdk-lib';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
 
+export interface LambdaEnvironments {
+    key: string,
+    value: string
+}
+
 export interface LambdaProps {
     path: string,
     table?: Table,
     tablePermission?: string,
-    multipleTableAccess?: boolean
+    multipleTableAccess?: boolean,
+    environments?: LambdaEnvironments[]
 }
 
 export class GenericLambda{
@@ -25,6 +31,7 @@ export class GenericLambda{
 
     private initialize(){
         this.createLambda();
+        this.addEnvironments();
         this.grantTableRights();
         this.grantMultipleTableAccessRights();
     }
@@ -33,9 +40,13 @@ export class GenericLambda{
         this.lambda = new NodejsFunction(this.stack, this.id, {
             entry: path.join(__dirname, this.props.path),
         })
+    }
 
-        if(this.props.table){
-            this.lambda.addEnvironment('TABLE_NAME',this.props.table.tableName)
+    private addEnvironments(){
+        if(this.props.environments){
+            this.props.environments.forEach((env)=>{
+                this.lambda.addEnvironment(env.key,env.value)
+            })
         }
     }
 

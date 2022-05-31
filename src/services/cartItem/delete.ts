@@ -12,18 +12,18 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     }
     addCorsHeader(result)
     try{
-        const productId = event.queryStringParameters?.['id']
-        if (productId) {
+        const cartItemId = event.queryStringParameters?.['id']
+        if (cartItemId) {
             const deleteResult = await dbClient.delete({
                 TableName: TABLE_NAME,
                 Key: {
-                    id: productId
+                    id: cartItemId
                 }
             }).promise();
             result.body = JSON.stringify(deleteResult);
         } else{
             result.statusCode = 422;
-            result.body = 'Product not found.'
+            result.body = 'Cart Item not found.'
         }
     }
     catch (error: any) {

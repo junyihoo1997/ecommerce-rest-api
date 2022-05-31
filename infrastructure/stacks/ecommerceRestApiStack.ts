@@ -3,7 +3,8 @@ import { Construct } from 'constructs';
 import { RestApi } from 'aws-cdk-lib/aws-apigateway'
 import { GenericTable } from '../constructs/genericTable';
 import { ProductApiConstruct } from '../constructs/productApiConstruct';
-import { CartApiConstruct } from '../constructs/cartApiConstruct';
+import { CartItemApiConstruct } from '../constructs/cartItemApiConstruct';
+import { TableName } from '../../src/enums';
 
 export class EcommerceRestApiStack extends Stack{
     // Create API Gateway
@@ -12,25 +13,18 @@ export class EcommerceRestApiStack extends Stack{
     // Create Product Table
     private productTable = new GenericTable(
         this, {
-            tableName: 'Product',
+            tableName: TableName.PRODUCT_TABLE,
             primaryKey: 'id',
             secondaryIndexes: ['name']
-        }
-    )
-
-    // Create Cart Table
-    private cartTable = new GenericTable(
-        this, {
-            tableName: 'Cart',
-            primaryKey: 'id',
         }
     )
 
     // Create Cart Item Table
     private cartItemTable = new GenericTable(
         this, {
-            tableName: 'CartItem',
+            tableName: TableName.CART_ITEM,
             primaryKey: 'id',
+            secondaryIndexes: ['userId']
         }
     )
 
@@ -44,8 +38,8 @@ export class EcommerceRestApiStack extends Stack{
         });
 
         // Create Cart Apis
-        new CartApiConstruct(this, {
-            table: this.cartTable.getTable(),
+        new CartItemApiConstruct(this, {
+            table: this.cartItemTable.getTable(),
             apiGateway: this.api
         });
     }
