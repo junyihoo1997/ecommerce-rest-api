@@ -17,16 +17,16 @@ Install the CDK CLI globally
 Configure aws credentials  
 `aws configure`
 
-Change directory to project directory
+Change directory to project directory<br/>
 `cd ecommerce-rest-api`
 
 Install dependencies  
 `npm install`
 
-Synthesizes and prints the CloudFormation template for the stack 
+Synthesizes and prints the CloudFormation template for the stack<br/> 
 `cdk synth`
 
-Bootstrap the stack
+Bootstrap the stack<br/>
 `cdk bootstrap`
 
 Deploy using the CDK CLI or terminal  
