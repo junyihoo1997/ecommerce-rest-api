@@ -50,15 +50,15 @@ Deploy using the CDK CLI or terminal
 ### Project Directory<a name="Directory"></a>
 
 - `infrastructure` Contains all infrastructure files
-  - `apis` Contains api gateway routes definition files
   - `stacks` Contains infrastructure stack for cdk
-  - `templates` Contains AWS CDK Resource templates
+  - `constructs` Contains infrastructure construct for cdk
   - `app.ts` Entry point file for AWS CDK
 - `src` Contains all application code
   - `enums` Contains files that define enums
   - `helpers` Contains shared helper files
   - `models` Contains model files
   - `services` Contains AWS Lambda Code for AWS CDK
+  - `validators` Contain validators for input body in AWS Lambda Code
 - `test` Contains all test files
 
 ### Official Resources<a name="Learning"></a>

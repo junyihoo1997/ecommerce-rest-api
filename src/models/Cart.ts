@@ -1,6 +1,10 @@
 export interface Cart {
     id: string,
-    productId: string,
     userId: string,
-    quantity: string,
+    items: CartItem[]
+}
+
+export interface CartItem {
+    productId: string,
+    quantity: string
 }

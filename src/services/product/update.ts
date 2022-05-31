@@ -13,19 +13,33 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     }
     addCorsHeader(result)
     try{
-        const item = getEventBody(event);
-        item.id = generateRandomId();
+        const requestBody = getEventBody(event);
+        const productId = event.queryStringParameters?.['productId']
+
         // validate product body
-        validateAsProductEntry(item);
+        validateAsProductEntry(requestBody);
 
-        await dbClient.put({
-            TableName: TABLE_NAME,
-            Item: item
-        }).promise();
+        if (requestBody && productId) {
+            const requestBodyKey = Object.keys(requestBody)[0];
+            const requestBodyValue = requestBody[requestBodyKey];
 
-        result.body = JSON.stringify({
-            id: item.id
-        })
+            const updateResult = await dbClient.update({
+                TableName: TABLE_NAME,
+                Key: {
+                    'id': productId
+                },
+                UpdateExpression: 'set #zzzNew = :new',
+                ExpressionAttributeValues: {
+                    ':new': requestBodyValue
+                },
+                ExpressionAttributeNames: {
+                    '#zzzNew': requestBodyKey
+                },
+                ReturnValues: 'UPDATED_NEW'
+            }).promise();
+
+            result.body = JSON.stringify(updateResult)
+        }
     }
     catch (error: any) {
         if (error instanceof MissingFieldError) {

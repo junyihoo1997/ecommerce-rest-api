@@ -1,8 +1,9 @@
 import { Stack, StackProps } from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import { RestApi } from 'aws-cdk-lib/aws-apigateway'
-import { GenericTable } from '../templates/genericTable';
-import { productApiGatewayIntegration } from '../apis/product';
+import { GenericTable } from '../constructs/genericTable';
+import { ProductApiConstruct } from '../constructs/productApiConstruct';
+import { CartApiConstruct } from '../constructs/cartApiConstruct';
 
 export class EcommerceRestApiStack extends Stack{
     // Create API Gateway
@@ -27,7 +28,16 @@ export class EcommerceRestApiStack extends Stack{
     constructor(scope: Construct, id: string, props: StackProps){
         super(scope, id, props)
 
-        // Create Product lambdas and api routes with apiGw
-        productApiGatewayIntegration(this, this.api, this.productTable);
+        // Create Product Apis
+        new ProductApiConstruct(this, {
+            table: this.productTable.getTable(),
+            apiGateway: this.api
+        });
+
+        // Create Cart Apis
+        new CartApiConstruct(this, {
+            table: this.cartTable.getTable(),
+            apiGateway: this.api
+        });
     }
 }

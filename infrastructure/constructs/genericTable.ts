@@ -8,7 +8,7 @@ export interface TableProps {
 }
 
 export class GenericTable{
-    private stack: Stack;
+    private readonly stack: Stack;
     private table: Table;
     private props: TableProps
 

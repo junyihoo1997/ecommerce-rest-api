@@ -4,19 +4,20 @@ import {aws_iam, Stack} from 'aws-cdk-lib';
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
 
 export interface LambdaProps {
-    id: string,
     path: string,
     table?: Table,
     tablePermission?: string,
-    multipleTableQueries?: boolean
+    multipleTableAccess?: boolean
 }
 
 export class GenericLambda{
     private lambda: NodejsFunction;
-    readonly stack: Stack;
-    private props: LambdaProps
+    private props: LambdaProps;
+    private readonly stack: Stack;
+    private readonly id: string;
 
-    public constructor(stack: Stack, props: LambdaProps){
+    public constructor(stack: Stack, id: string, props: LambdaProps){
+        this.id = id;
         this.stack = stack;
         this.props = props;
         this.initialize();
@@ -25,17 +26,21 @@ export class GenericLambda{
     private initialize(){
         this.createLambda();
         this.grantTableRights();
-        this.grantMultipleTableRights();
+        this.grantMultipleTableAccessRights();
     }
 
     private createLambda(){
-        this.lambda = new NodejsFunction(this.stack, this.props.id, {
+        this.lambda = new NodejsFunction(this.stack, this.id, {
             entry: path.join(__dirname, this.props.path),
         })
+
+        if(this.props.table){
+            this.lambda.addEnvironment('TABLE_NAME',this.props.table.tableName)
+        }
     }
 
-    private grantMultipleTableRights(){
-        if(this.props.multipleTableQueries){
+    private grantMultipleTableAccessRights(){
+        if(this.props.multipleTableAccess){
             this.lambda.role?.addManagedPolicy(
                 aws_iam.ManagedPolicy.fromAwsManagedPolicyName(
                     'AmazonDynamoDBFullAccess'
