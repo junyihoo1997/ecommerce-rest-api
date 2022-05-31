@@ -14,6 +14,7 @@ export class EcommerceRestApiStack extends Stack{
         this, {
             tableName: 'Product',
             primaryKey: 'id',
+            secondaryIndexes: ['name']
         }
     )
 
@@ -21,6 +22,14 @@ export class EcommerceRestApiStack extends Stack{
     private cartTable = new GenericTable(
         this, {
             tableName: 'Cart',
+            primaryKey: 'id',
+        }
+    )
+
+    // Create Cart Item Table
+    private cartItemTable = new GenericTable(
+        this, {
+            tableName: 'CartItem',
             primaryKey: 'id',
         }
     )

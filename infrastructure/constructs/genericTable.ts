@@ -20,6 +20,7 @@ export class GenericTable{
 
     private initialize(){
         this.createTable();
+        this.addSecondaryIndexes();
     }
 
     private createTable(){
@@ -30,6 +31,20 @@ export class GenericTable{
             },
             tableName: this.props.tableName,
         })
+    }
+
+    private addSecondaryIndexes(){
+        if (this.props.secondaryIndexes) {
+            for (const secondaryIndex of this.props.secondaryIndexes) {
+                this.table.addGlobalSecondaryIndex({
+                    indexName: secondaryIndex,
+                    partitionKey: {
+                        name: secondaryIndex,
+                        type: AttributeType.STRING
+                    }
+                })
+            }
+        }
     }
 
     public getTable(){

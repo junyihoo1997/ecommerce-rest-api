@@ -14,9 +14,9 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     try {
         if (event.queryStringParameters) {
             if ('id' in event.queryStringParameters) {
-                result.body = await queryWithPrimaryPartition(event.queryStringParameters);
+                result.body = await getWithPrimaryPartition(event.queryStringParameters);
             } else {
-                result.body = await queryWithSecondaryPartition(event.queryStringParameters);
+                result.body = await searchWithSecondaryPartition(event.queryStringParameters);
             }
         } else {
             result.body = await scanTable();
@@ -28,13 +28,13 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     return result
 }
 
-async function queryWithSecondaryPartition(queryParams: APIGatewayProxyEventQueryStringParameters) {
+async function searchWithSecondaryPartition(queryParams: APIGatewayProxyEventQueryStringParameters) {
     const queryKey = Object.keys(queryParams)[0];
     const queryValue = queryParams[queryKey];
-    const queryResponse = await dbClient.query({
+    const searchResponse = await dbClient.scan({
         TableName: TABLE_NAME!,
         IndexName: queryKey,
-        KeyConditionExpression: '#zz = :zzzz',
+        FilterExpression: "contains(#zz, :zzzz)",
         ExpressionAttributeNames: {
             '#zz': queryKey
         },
@@ -42,22 +42,18 @@ async function queryWithSecondaryPartition(queryParams: APIGatewayProxyEventQuer
             ':zzzz': queryValue
         }
     }).promise();
-    return JSON.stringify(queryResponse.Items);
+    return JSON.stringify(searchResponse.Items);
 }
 
-async function queryWithPrimaryPartition(queryParams: APIGatewayProxyEventQueryStringParameters) {
+async function getWithPrimaryPartition(queryParams: APIGatewayProxyEventQueryStringParameters) {
     const keyValue = queryParams['id'];
-    const queryResponse = await dbClient.query({
+    const queryResponse = await dbClient.get({
         TableName: TABLE_NAME,
-        KeyConditionExpression: '#zz = :zzzz',
-        ExpressionAttributeNames: {
-            '#zz': 'id'
-        },
-        ExpressionAttributeValues: {
-            ':zzzz': keyValue
+        Key:{
+            'id': keyValue
         }
     }).promise();
-    return JSON.stringify(queryResponse.Items);
+    return JSON.stringify(queryResponse.Item);
 }
 
 async function scanTable(){

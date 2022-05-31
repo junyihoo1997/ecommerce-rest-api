@@ -12,7 +12,7 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     }
     addCorsHeader(result)
     try{
-        const productId = event.queryStringParameters?.['productId']
+        const productId = event.queryStringParameters?.['id']
         if (productId) {
             const deleteResult = await dbClient.delete({
                 TableName: TABLE_NAME,
@@ -25,7 +25,7 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     }
     catch (error: any) {
         result.statusCode = 500;
-        result.body = error.message
+        result.body = 'Something went wrong'
     }
 
     return result;

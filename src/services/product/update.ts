@@ -1,7 +1,7 @@
 import { DynamoDB } from 'aws-sdk';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
-import { generateRandomId, getEventBody, addCorsHeader } from '../../helpers/Utils'
-import {MissingFieldError, validateAsProductEntry} from '../../validators/product';
+import { getEventBody, addCorsHeader } from '../../helpers/Utils'
+import { MissingFieldError, validateProductUpdateEntry } from '../../validators/product';
 
 const TABLE_NAME = process.env.TABLE_NAME as string;
 const dbClient = new DynamoDB.DocumentClient();
@@ -14,10 +14,10 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     addCorsHeader(result)
     try{
         const requestBody = getEventBody(event);
-        const productId = event.queryStringParameters?.['productId']
+        const productId = event.queryStringParameters?.['id']
 
         // validate product body
-        validateAsProductEntry(requestBody);
+        validateProductUpdateEntry(requestBody);
 
         if (requestBody && productId) {
             const requestBodyKey = Object.keys(requestBody)[0];
@@ -43,11 +43,12 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     }
     catch (error: any) {
         if (error instanceof MissingFieldError) {
-            result.statusCode = 403;
+            result.statusCode = 422;
+            result.body = error.message
         } else {
             result.statusCode = 500;
         }
-        result.body = error.message
+        result.body = 'something went wrong'
     }
 
     return result;
