@@ -6,7 +6,8 @@ Kit](https://github.com/awslabs/aws-cdk).
 ## Table of Contents
 1. [How to Deploy Examples](#Steps)
 2. [Other Commands](#Commands)
-3. [Official Resources](#Learning)
+3. [Project Directory](#Directory)
+4. [Official Resources](#Learning)
 
 
 ### How to Deploy Examples (Steps)<a name="Steps"></a>
@@ -32,7 +33,6 @@ Bootstrap the stack<br/>
 Deploy using the CDK CLI or terminal  
 `cdk deploy`
 
-
 ### Other CLI Commands<a name="Commands"></a>
 
 - `cdk diff` Prints out the difference in stacks
@@ -47,6 +47,19 @@ Deploy using the CDK CLI or terminal
 
 - `cdk doctor` Checks the CDK setup
 
+### Project Directory<a name="Directory"></a>
+
+- `infrastructure` Contains all infrastructure files
+  - `apis` Contains api gateway routes definition files
+  - `stacks` Contains infrastructure stack for cdk
+  - `templates` Contains AWS CDK Resource templates
+  - `app.ts` Entry point file for AWS CDK
+- `src` Contains all application code
+  - `enums` Contains files that define enums
+  - `helpers` Contains shared helper files
+  - `models` Contains model files
+  - `services` Contains AWS Lambda Code for AWS CDK
+- `test` Contains all test files
 
 ### Official Resources<a name="Learning"></a>
 - [Developer Guide](https://docs.aws.amazon.com/cdk/latest/guide/home.html)
