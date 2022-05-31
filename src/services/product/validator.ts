@@ -21,4 +21,7 @@ export function validateAsProductEntry(product: Product){
     if(!product.sku){
         throw new MissingFieldError('Value for sku required!')
     }
+    if(!product.category){
+        throw new MissingFieldError('Value for category required!')
+    }
 }

@@ -7,13 +7,22 @@ export const productApiGatewayIntegration = (stack: Stack, api: RestApi, table: 
     // Define Lambdas and Api Gateway routes here
     const props: apiProps[] = [
         {
-            lambdaId: 'productCreateLambda',
+            lambdaId: 'productCreate',
             lambdaLocalPath: '/../../src/services/product/create.ts',
-            apiPath: 'productCreate',
+            apiPath: 'product',
             httpMethod: 'POST',
             apiGateway: api,
             table: table.getTable(),
             tablePermission: 'write'
+        },
+        {
+            lambdaId: 'productRead',
+            lambdaLocalPath: '/../../src/services/product/read.ts',
+            apiPath: 'product',
+            httpMethod: 'GET',
+            apiGateway: api,
+            table: table.getTable(),
+            tablePermission: 'read'
         }
     ]
 

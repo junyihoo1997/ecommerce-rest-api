@@ -1,15 +1,55 @@
-# Welcome to your CDK TypeScript project
+# Examples Ecommerce Serverless Rest API using AWS CDK (Cloud Development Kit)
 
-You should explore the contents of this project. It demonstrates a CDK app with an instance of a stack (`EcommerceRestapiStack`)
-which contains an Amazon SQS queue that is subscribed to an Amazon SNS topic.
+This repository contains of example ecommerce serverless rest api project using [AWS Cloud Development
+Kit](https://github.com/awslabs/aws-cdk).
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+## Table of Contents
+1. [How to Deploy Examples](#Steps)
+2. [Other Commands](#Commands)
+3. [Official Resources](#Learning)
 
-## Useful commands
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+### How to Deploy Examples (Steps)<a name="Steps"></a>
+
+Install the CDK CLI globally  
+`npm install -g aws-cdk`
+
+Configure aws credentials  
+`aws configure`
+
+Change directory to project directory
+`cd ecommerce-rest-api`
+
+Install dependencies  
+`npm install`
+
+Synthesizes and prints the CloudFormation template for the stack 
+`cdk synth`
+
+Bootstrap the stack
+`cdk bootstrap`
+
+Deploy using the CDK CLI or terminal  
+`cdk deploy`
+
+
+### Other CLI Commands<a name="Commands"></a>
+
+- `cdk diff` Prints out the difference in stacks
+
+- `cdk destroy` Removes the stack
+
+- `cdk list` List the applications in given folder
+
+- `cdk synth`  Synthesizes and prints the CloudFormation template for the stack
+
+- `cdk init` Generates a new cdk project
+
+- `cdk doctor` Checks the CDK setup
+
+
+### Official Resources<a name="Learning"></a>
+- [Developer Guide](https://docs.aws.amazon.com/cdk/latest/guide/home.html)
+- [API Reference](https://docs.aws.amazon.com/cdk/api/latest/docs/aws-construct-library.html)
+- [CDK Workshop](https://cdkworkshop.com/)
+- [CDK Repository](https://github.com/aws/aws-cdk)
