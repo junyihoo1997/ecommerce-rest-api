@@ -34,7 +34,7 @@ export class EcommerceRestApiStack extends Stack{
         // Create Product Apis
         new ProductApiConstruct(this, {
             table: this.productTable.getTable(),
-            apiGateway: this.api
+            apiGateway: this.api,
         });
 
         // Create Cart Apis

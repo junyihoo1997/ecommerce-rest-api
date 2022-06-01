@@ -13,14 +13,16 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     addCorsHeader(result)
     try{
         const cartItemId = event.queryStringParameters?.['id']
-        if (cartItemId) {
-            const deleteResult = await dbClient.delete({
+        const cartItem = cartItemId ? await getTableRecordById(cartItemId, TABLE_NAME) : undefined;
+
+        if (cartItemId && cartItem && cartItem.Item) {
+            await dbClient.delete({
                 TableName: TABLE_NAME,
                 Key: {
                     id: cartItemId
                 }
             }).promise();
-            result.body = JSON.stringify(deleteResult);
+            result.body = 'Success';
         } else{
             result.statusCode = 422;
             result.body = 'Cart Item not found.'
@@ -32,6 +34,15 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     }
 
     return result;
+}
+
+async function getTableRecordById(id: string, tableName: string){
+    return await dbClient.get({
+        TableName: tableName,
+        Key:{
+            'id': id
+        }
+    }).promise();
 }
 
 export { handler }

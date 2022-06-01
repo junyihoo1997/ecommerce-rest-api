@@ -1,5 +1,5 @@
 import { Table } from 'aws-cdk-lib/aws-dynamodb';
-import { Cors, LambdaIntegration, ResourceOptions, RestApi } from 'aws-cdk-lib/aws-apigateway';
+import { Cors, LambdaIntegration, ResourceOptions, RestApi, TokenAuthorizer } from 'aws-cdk-lib/aws-apigateway';
 import { GenericLambda } from './genericLambda';
 import { Stack } from 'aws-cdk-lib';
 
@@ -64,7 +64,7 @@ export class ProductApiConstruct{
         const productUpdateLambda = new GenericLambda(this.stack, 'productUpdate',{
             path: '/../../src/services/product/update.ts',
             table: this.props.table,
-            tablePermission: 'write',
+            tablePermission: 'readWrite',
             environments: [
                 {
                     key: 'TABLE_NAME',
@@ -81,7 +81,7 @@ export class ProductApiConstruct{
         const productDeleteLambda = new GenericLambda(this.stack, 'productDelete',{
             path: '/../../src/services/product/delete.ts',
             table: this.props.table,
-            tablePermission: 'write',
+            tablePermission: 'readWrite',
             environments: [
                 {
                     key: 'TABLE_NAME',

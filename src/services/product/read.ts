@@ -42,6 +42,9 @@ async function searchWithSecondaryPartition(queryParams: APIGatewayProxyEventQue
             ':zzzz': queryValue
         }
     }).promise();
+
+    if (!searchResponse || searchResponse.Count! <= 0) return 'Product not found.'
+
     return JSON.stringify(searchResponse.Items);
 }
 
@@ -53,6 +56,9 @@ async function getWithPrimaryPartition(queryParams: APIGatewayProxyEventQueryStr
             'id': keyValue
         }
     }).promise();
+
+    if (!queryResponse || undefined) return 'Product not found.'
+
     return JSON.stringify(queryResponse.Item);
 }
 

@@ -92,7 +92,7 @@ export class CartItemApiConstruct {
         const cartItemDeleteLambda = new GenericLambda(this.stack, 'cartDelete',{
             path: '/../../src/services/cartItem/delete.ts',
             table: this.props.table,
-            tablePermission: 'write',
+            tablePermission: 'readWrite',
             environments: [
                 {
                     key: 'TABLE_NAME',

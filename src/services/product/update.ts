@@ -15,25 +15,36 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     try{
         const requestBody = getEventBody(event);
         const productId = event.queryStringParameters?.['id']
+        const product = productId ? await getTableRecordById(productId, TABLE_NAME) : undefined;
 
         // validate product body
         validateProductEntry(requestBody);
 
-        if (requestBody && productId) {
-            const requestBodyKey = Object.keys(requestBody)[0];
-            const requestBodyValue = requestBody[requestBodyKey];
-
+        //check if product is existed
+        if (requestBody && product && product.Item) {
             const updateResult = await dbClient.update({
                 TableName: TABLE_NAME,
                 Key: {
                     'id': productId
                 },
-                UpdateExpression: 'set #zzzNew = :new',
+                UpdateExpression: 'set #name = :name, #brand = :brand, #description = :description, #imageUrl = :imageUrl, #quantity = :quantity, #sku = :sku, #category = :category',
                 ExpressionAttributeValues: {
-                    ':new': requestBodyValue
+                    ':name': requestBody.name,
+                    ':brand': requestBody.brand,
+                    ':description': requestBody.description,
+                    ':imageUrl': requestBody.imageUrl,
+                    ':quantity': requestBody.quantity,
+                    ':sku': requestBody.sku,
+                    ':category': requestBody.category
                 },
                 ExpressionAttributeNames: {
-                    '#zzzNew': requestBodyKey
+                    '#name': 'name',
+                    '#brand': 'brand',
+                    '#description': 'description',
+                    '#imageUrl': 'imageUrl',
+                    '#quantity': 'quantity',
+                    '#sku': 'sku',
+                    '#category': 'category'
                 },
                 ReturnValues: 'UPDATED_NEW'
             }).promise();
@@ -55,6 +66,15 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     }
 
     return result;
+}
+
+async function getTableRecordById(id: string, tableName: string){
+    return await dbClient.get({
+        TableName: tableName,
+        Key:{
+            'id': id
+        }
+    }).promise();
 }
 
 export { handler }

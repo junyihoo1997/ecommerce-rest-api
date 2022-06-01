@@ -12,8 +12,16 @@ export function validateCartItemEntry(cartItem: CartItem){
     if(!cartItem.quantity){
         throw new MissingFieldError('Value for quantity required!')
     }
-    if(cartItem.quantity <= 0){
+    if(cartItem.quantity && cartItem.quantity <= 0){
         throw new MissingFieldError('Value for quantity should not lower than 0!')
     }
 }
 
+export function validateCartItemUpdateEntry(cartItem: CartItem){
+    if(!cartItem.quantity){
+        throw new MissingFieldError('Value for quantity required!')
+    }
+    if(cartItem.quantity && cartItem.quantity <= 0){
+        throw new MissingFieldError('Value for quantity should not lower than 0!')
+    }
+}

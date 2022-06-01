@@ -1,7 +1,7 @@
 import { DynamoDB } from 'aws-sdk';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { getEventBody, addCorsHeader } from '../../helpers/Utils'
-import { MissingFieldError, validateCartItemEntry } from '../../validators/cartItem';
+import { MissingFieldError, validateCartItemUpdateEntry } from '../../validators/cartItem';
 
 const TABLE_NAME = process.env.TABLE_NAME as string;
 const PRODUCT_TABLE_NAME = process.env.PRODUCT_TABLE_NAME as string;
@@ -16,34 +16,27 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
     try{
         const requestBody = getEventBody(event);
         const cartItemId = event.queryStringParameters?.['id']
+        const cartItem = cartItemId ? await getTableRecordById(cartItemId, TABLE_NAME) : undefined;
 
         // validate cart item body
-        validateCartItemEntry(requestBody);
+        validateCartItemUpdateEntry(requestBody);
 
-        if (requestBody && cartItemId) {
+        if (requestBody && cartItem && cartItem.Item) {
             // Validate with product and product quantity
-            const product = await dbClient.get({
-                TableName: PRODUCT_TABLE_NAME,
-                Key:{
-                    'id': requestBody.productId
-                }
-            }).promise();
+            const product = await getTableRecordById(cartItem.Item.productId, PRODUCT_TABLE_NAME);
 
             if(product && product.Item && product.Item.quantity >= requestBody.quantity) {
-                const requestBodyKey = Object.keys(requestBody)[0];
-                const requestBodyValue = requestBody[requestBodyKey];
-
                 const updateResult = await dbClient.update({
                     TableName: TABLE_NAME,
                     Key: {
                         'id': cartItemId
                     },
-                    UpdateExpression: 'set #zzzNew = :new',
+                    UpdateExpression: 'set #quantity = :quantity',
                     ExpressionAttributeValues: {
-                        ':new': requestBodyValue
+                        ':quantity': requestBody.quantity
                     },
                     ExpressionAttributeNames: {
-                        '#zzzNew': requestBodyKey
+                        '#quantity': 'quantity'
                     },
                     ReturnValues: 'UPDATED_NEW'
                 }).promise();
@@ -64,10 +57,19 @@ async function handler(event: APIGatewayProxyEvent, context: Context): Promise<A
         } else {
             result.statusCode = 500;
         }
-        result.body = 'something went wrong'
+        result.body = error.message
     }
 
     return result;
+}
+
+async function getTableRecordById(id: string, tableName: string){
+    return await dbClient.get({
+        TableName: tableName,
+        Key:{
+            'id': id
+        }
+    }).promise();
 }
 
 export { handler }
